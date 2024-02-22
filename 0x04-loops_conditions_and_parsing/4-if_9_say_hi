@@ -6,10 +6,12 @@ value=0
 
 while [ $value -lt 10 ]
 do
-  if [ $value -eq 9 ]
+  if [ $value -eq 8 ]
   then 
+    echo "Best School"
     echo "Hi"
+  else
+    echo "Best School"
   fi
-  echo "Best School"
   (( value++ ))
 done
