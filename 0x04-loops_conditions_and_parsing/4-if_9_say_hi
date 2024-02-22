@@ -8,8 +8,8 @@ while [ $value -lt 10 ]
 do
   if [ $value -eq 9 ]
   then 
-    echo "Best School"
+    echo "Hi"
   fi
-  echo "Hi"
+  echo "Best School"
   (( value++ ))
 done
