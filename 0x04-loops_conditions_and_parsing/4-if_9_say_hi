@@ -6,7 +6,7 @@ value=0
 
 while [ $value -lt 10 ]
 do
-  if [ $value -eq 8 ]
+  if [ $value -eq 9 ]
   then 
     echo "Best School"
     echo "Hi"
