@@ -1,42 +1,45 @@
 #!/usr/bin/env bash
-# Manages the script manage_my_process.
-#   When passed the argument `start`:
-#     1. Starts manage_my_process
-#     2. Creates a file containings its PID in /var/run/my_process.pid
-#     3. Displays "manage_my_process started"
-#   When passed the argument `stop`:
-#     1. Stops manage_my_process
-#     2. Deletes the file /var/run/my_process.pid
-#     3. Displays "manage_my_process stopped"
-#   When passed the argument `restart`:
-#     1. Stops manage_my_process
-#     2. Deletes the file /var/run/my_process.pid
-#     3. Starts manage_my_process
-#     4. Creates a file containing its PID in /var/run/my_process.pid
-#     5. Displays "manage_my_process restarted"
-#   If any other or no arguments are passed, displays
-#+  "Usage: manage_my_process {start|stop|restart}"
+# This script manages the `manage_my_process` script.
 
-if [ "$1" == "start" ]
-then
-  ./manage_my_process &
-  echo $$ > /var/run/my_process.pid
-  echo "manage_my_process started"
+pid_file=/var/run/my_process.pid
 
-elif [ "$1" == "stop" ]
-then
-  kill "$(pgrep -f /manage_my_process)" 
-  rm /var/run/my_process.pid
-  echo "manage_my_process stopped"
-
-elif [ "$1" == "restart" ]
-then
-  kill "$(pgrep -f /manage_my_process)"
-  rm /var/run/my_process.pid
-  ./manage_my_process &
-  echo $$ > /var/run/my_process.pid
-  echo "manage_my_process restarted"
-
-else
-  echo "Usage: manage_my_process {start|stop|restart}"
+# ensure user is root
+if [[ $UID != 0 ]]; then
+	echo "You must be root!"
+	exit 1
 fi
+
+function del_pid_file()
+{
+	rm -f $pid_file 2> /dev/null
+}
+
+function kill_process()
+{
+	if [ -e $pid_file ]; then
+		kill "$(cat $pid_file)" 2> /dev/null
+		del_pid_file
+	fi
+}
+
+function start_process()
+{
+	./manage_my_process &
+	echo "$!" > $pid_file # save the PID for the background process
+}
+
+case "$1" in
+	start)
+		start_process
+		echo "manage_my_process started";;
+	stop)
+		kill_process
+		echo "manage_my_process stopped";;
+	restart)
+		kill_process
+		start_process
+		echo "manage_my_process restarted";;
+	*)
+		echo "Usage: manage_my_process {start|stop|restart}"
+		exit 1;;
+esac
