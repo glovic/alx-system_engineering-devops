@@ -18,23 +18,14 @@ defaults
     option  forwardfor
     option  http-server-close
 
-frontend www-http
-    bind   0.0.0.0:80
-    reqadd X-Forwarded-Proto:\ http
-    default_backend www-backend
-
 frontend www-https
     bind   0.0.0.0:443 ssl crt /etc/haproxy/certs/www.bdbnb.site.pem
     reqadd X-Forwarded-Proto:\ https
-    acl    letsencrypt-acl path_beg /.well-known/acme-challenge/
-    use_backend letsencrypt-backend if letsencrypt-acl
-    default_backend www-backend
+    acl    holberton-acl path /
+    use_backend www-backend if holberton-acl
 
 backend www-backend
     balance  roundrobin
-    redirect scheme https if !{ ssl_fc }
     server 530577-web-01 18.233.62.156:80 check
     server 530577-web-02 107.23.97.182:80 check
 
-backend letsencrypt-backend
-    server letsencrypt 127.0.0.1:54321
