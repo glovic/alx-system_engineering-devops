@@ -1,9 +1,33 @@
 #!/usr/bin/env bash
-# Script that installs Nginx server and redirects /redirect_me
+# Configures a new Ubuntu machine by installing Nginx to listen on port 80 and serve a Hello World page.
 
-sudo apt-get -y update
-sudo apt-get -y install nginx
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+         sudo apt-get install nginx -y
+
+echo -e "\nSetting up some minor stuff.\n"
+
+# Starts nginx service
+sudo service nginx start
+
+# Allows nginx through the firewall
 sudo ufw allow 'Nginx HTTP'
-echo "Holberton School" | sudo tee /var/www/html/index
-sudo sed -i '/listen 80 default_server/a rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4/ permanent;' /etc/nginx/sites-available/default
+
+# Gives the user ownership of website files for easy editing
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
+
+# Backs up default index
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
+
+# Creates new index
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
+
+# Sets up /redirect_me to a youtube video
+sudo sed -i '24i\       rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
+
+# Restarts nginx
 sudo service nginx restart
+
+echo -e "\nCompleted.\n"
+
