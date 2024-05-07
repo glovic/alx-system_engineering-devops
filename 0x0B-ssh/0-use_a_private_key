@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
-
 #SSH script that connent to server using the private key
-
-ssh -i ~/.ssh/school ubuntu@18.233.62.156
+ssh -i ~/.ssh/school ubuntu@34.204.76.50
