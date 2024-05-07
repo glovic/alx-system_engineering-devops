@@ -38,8 +38,8 @@ frontend vnbnb-tech-frontend
 
 backend vnbnb-tech-backend
     balance roundrobin
-    server 530577-web-01 100.27.0.241:80 check
-    server 530577-web-02 52.87.252.166:80 check
+    server 530577-web-01 34.204.76.50:80 check
+    server 530577-web-02 100.27.0.241:80 check
 "
 
 # Shellcheck disable=SC2154
