@@ -26,12 +26,3 @@ def top_ten(subreddit):
     titles = [post.get("data").get("title") for post in data.get("children")]
         
     return titles
-
-# Example usage:
-if __name__ == "__main__":
-    subreddit = "python"
-    top_posts = top_ten(subreddit)
-    print("Top 10 posts in r/{}:".format(subreddit))
-    for idx, post in enumerate(top_posts, start=1):
-        print(f"{idx}. {post}")
-
