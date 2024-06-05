@@ -1,28 +1,22 @@
 #!/usr/bin/python3
-
-"""
-    This module contains the function top 10 posts listed for a given subreddit.
-"""
-
+'''
+    this module contains the function top_ten
+'''
 import requests
+from sys import argv
 
 def top_ten(subreddit):
-    """Returns the titles of the top ten posts for a given subreddit."""
-    
-    # Validate subreddit name
-    if not subreddit or not subreddit.isalnum():
-        print("Invalid subreddit name:", subreddit)
-        return []
-    
-    url = f"https://www.reddit.com/r/{subreddit}/hot/.json"
-    headers = {
-        "User-Agent": "MyRedditClient/1.0 (by /u/victorglo)"
-    }
-    params = {"limit": 10}
-    
-    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
-    
-    data = response.json().get("data")
-    titles = [post.get("data").get("title") for post in data.get("children")]
-        
-    return titles
+    '''
+        returns the top ten posts for a given subreddit
+    '''
+    user_agent = {'User-Agent': 'MyRedditClient/1.0 (by /u/victorglo)'}
+    url = requests.get('https://www.reddit.com/r/{}/hot/.json?limit=10'.format(subreddit), headers=user_agent).json()
+    try:
+        for post in url.get('data').get('children'):
+            print(post.get('data').get('title'))
+    except Exception:
+        print(None)
+
+if __name__ == "__main__":
+    top_ten(argv[1])
+
