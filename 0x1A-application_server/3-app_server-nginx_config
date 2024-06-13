@@ -1,0 +1,47 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    # Set the root directory for the server
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    # Set the server name (underscore means any server name)
+    server_name _;
+
+    # Add a custom header to identify the server handling the request
+    add_header X-Served-By $hostname;
+
+    # Serve static files from the specified alias directory
+    location /hbnb_static { 
+        alias /data/web_static/current/;
+    }
+
+    # Try to serve the request as a file, then as a directory,
+    # if neither is found, return a 404 error
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Proxy requests to /airbnb-onepage to the Gunicorn app running on port 5000
+    location /airbnb-onepage {
+        proxy_pass http://0.0.0.0:5000/airbnb-onepage;
+    }
+
+    # Proxy requests to the dynamic route to the Gunicorn app running on port 5001
+    location ~ ^/airbnb-dynamic/number_odd_or_even/([0-9]+)$ {
+        proxy_pass http://0.0.0.0:5001/number_odd_or_even/$1;
+    }
+
+    # Redirect requests with "redirect_me" in the filename to a specified URL
+    if ($request_filename ~ redirect_me) {
+        rewrite ^ https://th3-gr00t.tk/ permanent;
+    }
+
+    # Custom error page for 404 errors
+    error_page 404 /error_404.html;
+    location = /error_404.html {
+        internal;
+    }
+}
+
